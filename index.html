@@ -50,6 +50,18 @@
             font-size: 1.2em;
             margin-top: 20px;
         }
+        .quiz-selector button {
+            margin: 5px;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .quiz-selector button:hover {
+            background-color: #218838;
+        }
     </style>
 </head>
 <body>
@@ -57,15 +69,12 @@
         <h1>Quiz de Culture Générale</h1>
     </header>
     <div class="container">
-        <div id="quiz-1" class="quiz">
-            <!-- Les questions de quiz 1 seront ajoutées ici par JavaScript -->
+        <div class="quiz-selector">
+            <button onclick="startQuiz(quiz1Questions)">Quiz 1</button>
+            <button onclick="startQuiz(quiz2Questions)">Quiz 2</button>
+            <button onclick="startQuiz(quiz3Questions)">Quiz 3</button>
         </div>
-        <div id="quiz-2" class="quiz" style="display: none;">
-            <!-- Les questions de quiz 2 seront ajoutées ici par JavaScript -->
-        </div>
-        <div id="quiz-3" class="quiz" style="display: none;">
-            <!-- Les questions de quiz 3 seront ajoutées ici par JavaScript -->
-        </div>
+        <div id="quiz" class="quiz"></div>
         <div id="result" class="result" style="display: none;"></div>
     </div>
 
@@ -111,10 +120,18 @@
 
         let currentQuestion = 0;
         let score = 0;
-        let currentQuiz = quiz1Questions;
+        let currentQuiz = [];
+
+        function startQuiz(quiz) {
+            currentQuiz = quiz;
+            currentQuestion = 0;
+            score = 0;
+            document.getElementById("result").style.display = "none";
+            loadQuestion();
+        }
 
         function loadQuestion() {
-            const quizDiv = document.querySelector(".quiz:not([style*='display: none'])");
+            const quizDiv = document.getElementById("quiz");
             quizDiv.innerHTML = "";
 
             if (currentQuestion < currentQuiz.length) {
@@ -148,17 +165,13 @@
         }
 
         function showResult() {
-            const quizDiv = document.querySelector(".quiz:not([style*='display: none'])");
+            const quizDiv = document.getElementById("quiz");
             const resultDiv = document.getElementById("result");
 
             quizDiv.style.display = "none";
             resultDiv.style.display = "block";
             resultDiv.textContent = `Quiz terminé ! Vous avez obtenu ${score} / ${currentQuiz.length} bonnes réponses.`;
         }
-
-        document.addEventListener("DOMContentLoaded", () => {
-            loadQuestion();
-        });
     </script>
 </body>
 </html>
