@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz de Culture Générale</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .question {
+            margin: 20px 0;
+            text-align: left;
+        }
+        .question h3 {
+            margin-bottom: 10px;
+        }
+        .answers button {
+            display: block;
+            margin: 5px 0;
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .answers button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            font-size: 1.2em;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Quiz de Culture Générale</h1>
+    </header>
+    <div class="container">
+        <div id="quiz">
+            <!-- Les questions seront ajoutées ici par JavaScript -->
+        </div>
+        <div id="result" class="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        const questions = [
+            { question: "Quel est le plus petit pays du monde en termes de superficie ?", answers: ["Monaco", "Vatican", "Malte", "Saint-Marin"], correct: 1 },
+            { question: "Quel animal a donné son nom à une position de yoga ?", answers: ["Le chat", "Le chien", "Le cobra", "L’éléphant"], correct: 1 },
+            { question: "Quel fruit peut flotter sur l’eau à cause de sa structure interne ?", answers: ["Pomme", "Noix de coco", "Pastèque", "Citron"], correct: 2 },
+            { question: "Dans quelle ville peut-on trouver la Tour Penchée ?", answers: ["Florence", "Pise", "Rome", "Venise"], correct: 1 },
+            { question: "Quel est le prénom du célèbre détective Sherlock Holmes ?", answers: ["John", "Edward", "Sherlock", "Henry"], correct: 2 },
+            { question: "Quelle planète est connue comme la 'planète rouge' ?", answers: ["Mars", "Vénus", "Jupiter", "Saturne"], correct: 0 },
+            { question: "Quel est le plus long fleuve du monde ?", answers: ["L’Amazone", "Le Nil", "Le Mississippi", "Le Yangtsé"], correct: 1 },
+            { question: "Quel fromage est célèbre pour ses trous ?", answers: ["Gouda", "Roquefort", "Emmental", "Camembert"], correct: 2 },
+            { question: "Quel animal est l'emblème national de l'Australie ?", answers: ["Kangourou", "Koala", "Émeu", "Dingo"], correct: 0 },
+            { question: "Dans quelle ville peut-on voir le célèbre 'Big Ben' ?", answers: ["Paris", "New York", "Londres", "Berlin"], correct: 2 },
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        function loadQuestion() {
+            const quizDiv = document.getElementById("quiz");
+            quizDiv.innerHTML = "";
+
+            if (currentQuestion < questions.length) {
+                const q = questions[currentQuestion];
+
+                const questionElement = document.createElement("div");
+                questionElement.classList.add("question");
+                questionElement.innerHTML = `<h3>${currentQuestion + 1}. ${q.question}</h3>`;
+                quizDiv.appendChild(questionElement);
+
+                const answersDiv = document.createElement("div");
+                answersDiv.classList.add("answers");
+                q.answers.forEach((answer, index) => {
+                    const button = document.createElement("button");
+                    button.textContent = answer;
+                    button.onclick = () => checkAnswer(index);
+                    answersDiv.appendChild(button);
+                });
+                quizDiv.appendChild(answersDiv);
+            } else {
+                showResult();
+            }
+        }
+
+        function checkAnswer(index) {
+            if (index === questions[currentQuestion].correct) {
+                score++;
+            }
+            currentQuestion++;
+            loadQuestion();
+        }
+
+        function showResult() {
+            const quizDiv = document.getElementById("quiz");
+            const resultDiv = document.getElementById("result");
+
+            quizDiv.style.display = "none";
+            resultDiv.style.display = "block";
+            resultDiv.textContent = `Quiz terminé ! Vous avez obtenu ${score} / ${questions.length} bonnes réponses.`;
+        }
+
+        loadQuestion();
+    </script>
+</body>
+</html>
