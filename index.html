@@ -57,14 +57,14 @@
         <h1>Quiz de Culture Générale</h1>
     </header>
     <div class="container">
-        <div id="quiz">
-            <!-- Les questions seront ajoutées ici par JavaScript -->
+        <div id="quiz-1" class="quiz">
+            <!-- Les questions de quiz 1 seront ajoutées ici par JavaScript -->
         </div>
         <div id="result" class="result" style="display: none;"></div>
     </div>
 
     <script>
-        const questions = [
+        const quiz1Questions = [
             { question: "Quel est le plus petit pays du monde en termes de superficie ?", answers: ["Monaco", "Vatican", "Malte", "Saint-Marin"], correct: 1 },
             { question: "Quel animal a donné son nom à une position de yoga ?", answers: ["Le chat", "Le chien", "Le cobra", "L’éléphant"], correct: 1 },
             { question: "Quel fruit peut flotter sur l’eau à cause de sa structure interne ?", answers: ["Pomme", "Noix de coco", "Pastèque", "Citron"], correct: 2 },
@@ -81,11 +81,11 @@
         let score = 0;
 
         function loadQuestion() {
-            const quizDiv = document.getElementById("quiz");
+            const quizDiv = document.getElementById("quiz-1");
             quizDiv.innerHTML = "";
 
-            if (currentQuestion < questions.length) {
-                const q = questions[currentQuestion];
+            if (currentQuestion < quiz1Questions.length) {
+                const q = quiz1Questions[currentQuestion];
 
                 const questionElement = document.createElement("div");
                 questionElement.classList.add("question");
@@ -107,7 +107,7 @@
         }
 
         function checkAnswer(index) {
-            if (index === questions[currentQuestion].correct) {
+            if (index === quiz1Questions[currentQuestion].correct) {
                 score++;
             }
             currentQuestion++;
@@ -115,12 +115,12 @@
         }
 
         function showResult() {
-            const quizDiv = document.getElementById("quiz");
+            const quizDiv = document.getElementById("quiz-1");
             const resultDiv = document.getElementById("result");
 
             quizDiv.style.display = "none";
             resultDiv.style.display = "block";
-            resultDiv.textContent = `Quiz terminé ! Vous avez obtenu ${score} / ${questions.length} bonnes réponses.`;
+            resultDiv.textContent = `Quiz terminé ! Vous avez obtenu ${score} / ${quiz1Questions.length} bonnes réponses.`;
         }
 
         loadQuestion();
