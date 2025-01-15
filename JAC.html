@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Jeux des Associations Culturelles</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f0f2f5;
+        }
+        .game-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .game-selector {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .game-selector select {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+        .game-area {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+            gap: 20px;
+        }
+        .column {
+            flex: 1;
+        }
+        .item {
+            background: #e9ecef;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .item:hover {
+            background: #dee2e6;
+        }
+        .item.selected {
+            background: #007bff;
+            color: white;
+        }
+        .item.correct {
+            background: #28a745;
+            color: white;
+        }
+        .item.incorrect {
+            background: #dc3545;
+            color: white;
+        }
+        .controls {
+            text-align: center;
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+            margin: 0 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .score {
+            text-align: center;
+            font-size: 18px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>Jeux des Associations Culturelles</h1>
+        
+        <div class="game-selector">
+            <select id="gameSelect" onchange="changeGame()">
+                <option value="JAC1">JAC1 - Art et Littérature</option>
+                <option value="JAC2">JAC2 - Sciences et Découvertes</option>
+                <option value="JAC3">JAC3 - Histoire et Géographie</option>
+            </select>
+        </div>
+        
+        <p id="gameDescription"></p>
+        <div class="score">Score: <span id="score">0</span> / <span id="totalPairs">10</span></div>
+        
+        <div class="game-area">
+            <div class="column" id="leftColumn"></div>
+            <div class="column" id="rightColumn"></div>
+        </div>
+        
+        <div class="controls">
+            <button onclick="checkAnswers()">Vérifier</button>
+            <button onclick="resetGame()">Nouvelle Partie</button>
+        </div>
+    </div>
+
+    <script>
+        const games = {
+            JAC1: {
+                description: "Associez les artistes et écrivains avec leurs œuvres célèbres",
+                pairs: [
+                    { left: "Le Louvre", right: "La Joconde" },
+                    { left: "Victor Hugo", right: "Les Misérables" },
+                    { left: "Claude Monet", right: "Les Nymphéas" },
+                    { left: "Émile Zola", right: "Germinal" },
+                    { left: "Auguste Renoir", right: "Le Bal du Moulin de la Galette" },
+                    { left: "Marcel Proust", right: "À la recherche du temps perdu" },
+                    { left: "Paul Cézanne", right: "La Montagne Sainte-Victoire" },
+                    { left: "Albert Camus", right: "L'Étranger" },
+                    { left: "Edgar Degas", right: "La Petite Danseuse" },
+                    { left: "Gustave Flaubert", right: "Madame Bovary" }
+                ]
+            },
+            JAC2: {
+                description: "Associez les scientifiques avec leurs découvertes majeures",
+                pairs: [
+                    { left: "Louis Pasteur", right: "La Pasteurisation" },
+                    { left: "Marie Curie", right: "Le Radium" },
+                    { left: "Antoine Lavoisier", right: "Loi de Conservation de la Masse" },
+                    { left: "Henri Becquerel", right: "La Radioactivité" },
+                    { left: "Louis de Broglie", right: "La Dualité Onde-Corpuscule" },
+                    { left: "Pierre et Marie Curie", right: "Le Polonium" },
+                    { left: "Georges Charpak", right: "La Chambre Proportionnelle" },
+                    { left: "Claude Bernard", right: "La Médecine Expérimentale" },
+                    { left: "Paul Sabatier", right: "La Catalyse" },
+                    { left: "Jean Perrin", right: "Les Atomes" }
+                ]
+            },
+            JAC3: {
+                description: "Associez les lieux historiques avec les événements qui s'y sont déroulés",
+                pairs: [
+                    { left: "Versailles", right: "Traité de 1919" },
+                    { left: "Reims", right: "Sacre des Rois de France" },
+                    { left: "Bastille", right: "14 juillet 1789" },
+                    { left: "Mont Saint-Michel", right: "Abbaye Médiévale" },
+                    { left: "Lascaux", right: "Peintures Rupestres" },
+                    { left: "Alésia", right: "Défaite de Vercingétorix" },
+                    { left: "Avignon", right: "Palais des Papes" },
+                    { left: "Normandie", right: "Débarquement 1944" },
+                    { left: "Carnac", right: "Menhirs Néolithiques" },
+                    { left: "Verdun", right: "Bataille de 1916" }
+                ]
+            }
+        };
+
+        let currentGame = 'JAC1';
+        let selectedLeft = null;
+        let selectedRight = null;
+        let matches = new Set();
+        let score = 0;
+
+        function shuffle(array) {
+            return array.sort(() => Math.random() - 0.5);
+        }
+
+        function changeGame() {
+            currentGame = document.getElementById('gameSelect').value;
+            document.getElementById('gameDescription').textContent = games[currentGame].description;
+            resetGame();
+        }
+
+        function createGame() {
+            const leftColumn = document.getElementById('leftColumn');
+            const rightColumn = document.getElementById('rightColumn');
+            const currentPairs = games[currentGame].pairs;
+            document.getElementById('totalPairs').textContent = currentPairs.length;
+            document.getElementById('gameDescription').textContent = games[currentGame].description;
+            
+            leftColumn.innerHTML = '';
+            rightColumn.innerHTML = '';
+            
+            const shuffledLeft = shuffle([...currentPairs]);
+            const shuffledRight = shuffle([...currentPairs]);
+            
+            shuffledLeft.forEach((pair, index) => {
+                const div = document.createElement('div');
+                div.className = 'item';
+                div.textContent = pair.left;
+                div.setAttribute('data-index', index);
+                div.onclick = () => selectLeft(div);
+                leftColumn.appendChild(div);
+            });
+            
+            shuffledRight.forEach((pair, index) => {
+                const div = document.createElement('div');
+                div.className = 'item';
+                div.textContent = pair.right;
+                div.setAttribute('data-index', index);
+                div.onclick = () => selectRight(div);
+                rightColumn.appendChild(div);
+            });
+        }
+
+        function selectLeft(element) {
+            if (selectedLeft) {
+                selectedLeft.classList.remove('selected');
+            }
+            element.classList.add('selected');
+            selectedLeft = element;
+            tryMatch();
+        }
+
+        function selectRight(element) {
+            if (selectedRight) {
+                selectedRight.classList.remove('selected');
+            }
+            element.classList.add('selected');
+            selectedRight = element;
+            tryMatch();
+        }
+
+        function tryMatch() {
+            if (selectedLeft && selectedRight) {
+                const leftText = selectedLeft.textContent;
+                const rightText = selectedRight.textContent;
+                
+                const match = games[currentGame].pairs.find(pair => 
+                    pair.left === leftText && pair.right === rightText
+                );
+                
+                if (match) {
+                    selectedLeft.classList.add('correct');
+                    selectedRight.classList.add('correct');
+                    matches.add(leftText);
+                    score++;
+                    document.getElementById('score').textContent = score;
+                } else {
+                    selectedLeft.classList.add('incorrect');
+                    selectedRight.classList.add('incorrect');
+                }
+                
+                setTimeout(() => {
+                    selectedLeft.classList.remove('selected', 'incorrect');
+                    selectedRight.classList.remove('selected', 'incorrect');
+                    selectedLeft = null;
+                    selectedRight = null;
+                }, 1000);
+            }
+        }
+
+        function checkAnswers() {
+            const totalPairs = games[currentGame].pairs.length;
+            if (score === totalPairs) {
+                alert('Félicitations ! Vous avez trouvé toutes les associations !');
+            } else {
+                alert(`Vous avez trouvé ${score} associations sur ${totalPairs}. Continuez !`);
+            }
+        }
+
+        function resetGame() {
+            matches.clear();
+            score = 0;
+            document.getElementById('score').textContent = score;
+            createGame();
+        }
+
+        // Initialiser le jeu
+        createGame();
+    </script>
+</body>
+</html>
