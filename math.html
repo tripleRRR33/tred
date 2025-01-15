@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jeu de rapidité mathématique</title>
+</head>
+<body>
+  <h1>Jeu de rapidité mathématique</h1>
+  <p>Répondez vite à la question suivante :</p>
+  <p id="question"></p>
+  <input type="number" id="answer" placeholder="Votre réponse" />
+  <button onclick="checkAnswer()">Vérifier</button>
+  <p id="result"></p>
+
+  <script>
+    let num1, num2, operator;
+
+    function generateQuestion() {
+      num1 = Math.floor(Math.random() * 20) + 1;
+      num2 = Math.floor(Math.random() * 20) + 1;
+      operator = Math.random() > 0.5 ? '+' : '-';
+      
+      document.getElementById('question').textContent = `${num1} ${operator} ${num2}`;
+    }
+
+    function checkAnswer() {
+      let correctAnswer = operator === '+' ? num1 + num2 : num1 - num2;
+      let userAnswer = parseInt(document.getElementById('answer').value);
+
+      if (userAnswer === correctAnswer) {
+        document.getElementById('result').textContent = "Bonne réponse !";
+      } else {
+        document.getElementById('result').textContent = `Mauvaise réponse ! La bonne réponse était ${correctAnswer}.`;
+      }
+      
+      document.getElementById('answer').value = '';
+      generateQuestion();
+    }
+
+    generateQuestion();
+  </script>
+</body>
+</html>
