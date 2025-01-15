@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Devine la Capitale</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            text-align: center;
+            padding: 20px;
+        }
+        .question {
+            margin: 20px 0;
+            font-size: 24px;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .option {
+            margin: 10px;
+            padding: 10px 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            cursor: pointer;
+        }
+        .option:hover {
+            background-color: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="question" id="question"></div>
+    <div class="options" id="options"></div>
+    
+    <div id="result"></div>
+    
+    <script>
+        const countries = [
+            { country: "France", capital: "Paris" },
+            { country: "Italie", capital: "Rome" },
+            { country: "Espagne", capital: "Madrid" },
+            { country: "Allemagne", capital: "Berlin" },
+            { country: "Royaume-Uni", capital: "Londres" },
+            { country: "Japon", capital: "Tokyo" },
+            { country: "Chine", capital: "Pékin" },
+            { country: "Inde", capital: "New Delhi" },
+            { country: "États-Unis", capital: "Washington D.C." },
+            { country: "Canada", capital: "Ottawa" },
+            { country: "Australie", capital: "Canberra" },
+            { country: "Brésil", capital: "Brasília" },
+            { country: "Argentine", capital: "Buenos Aires" },
+            { country: "Mexique", capital: "Mexico" },
+            { country: "Russie", capital: "Moscou" },
+            { country: "Grèce", capital: "Athènes" },
+            { country: "Égypte", capital: "Le Caire" },
+            // Ajoutez ici autant de pays que nécessaire
+        ];
+
+        function getRandomInt(max) {
+            return Math.floor(Math.random() * max);
+        }
+
+        function generateQuestion() {
+            const randomIndex = getRandomInt(countries.length);
+            const country = countries[randomIndex].country;
+            const correctCapital = countries[randomIndex].capital;
+
+            document.getElementById('question').innerText = `Quelle est la capitale de ${country} ?`;
+
+            const optionsContainer = document.getElementById('options');
+            optionsContainer.innerHTML = '';
+
+            const allCapitals = countries.map(c => c.capital);
+            const shuffledCapitals = allCapitals.sort(() => 0.5 - Math.random());
+            const options = [correctCapital, ...shuffledCapitals.slice(0, 3)].sort(() => 0.5 - Math.random());
+
+            options.forEach(option => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                optionElement.innerText = option;
+                optionElement.onclick = () => checkAnswer(option, correctCapital);
+                optionsContainer.appendChild(optionElement);
+            });
+        }
+
+        function checkAnswer(selected, correct) {
+            const result = document.getElementById('result');
+            if (selected === correct) {
+                result.innerHTML = `<p style="color: green;">Correct ! La capitale de ${countries.find(c => c.capital === correct).country} est bien ${correct}.</p>`;
+            } else {
+                result.innerHTML = `<p style="color: red;">Faux ! La bonne réponse est ${correct}.</p>`;
+            }
+            setTimeout(generateQuestion, 2000); // Générer une nouvelle question après 2 secondes
+        }
+
+        generateQuestion(); // Générer la première question au chargement de la page
+    </script>
+
+</body>
+</html>
