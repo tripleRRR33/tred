@@ -60,6 +60,12 @@
         <div id="quiz-1" class="quiz">
             <!-- Les questions de quiz 1 seront ajoutées ici par JavaScript -->
         </div>
+        <div id="quiz-2" class="quiz" style="display: none;">
+            <!-- Les questions de quiz 2 seront ajoutées ici par JavaScript -->
+        </div>
+        <div id="quiz-3" class="quiz" style="display: none;">
+            <!-- Les questions de quiz 3 seront ajoutées ici par JavaScript -->
+        </div>
         <div id="result" class="result" style="display: none;"></div>
     </div>
 
@@ -77,15 +83,42 @@
             { question: "Dans quelle ville peut-on voir le célèbre 'Big Ben' ?", answers: ["Paris", "New York", "Londres", "Berlin"], correct: 2 },
         ];
 
+        const quiz2Questions = [
+            { question: "Quel est le pays d'origine de la pizza ?", answers: ["Espagne", "Italie", "Grèce", "France"], correct: 1 },
+            { question: "Qui a peint la Joconde ?", answers: ["Vincent van Gogh", "Claude Monet", "Léonard de Vinci", "Pablo Picasso"], correct: 2 },
+            { question: "Quel est le plus grand océan du monde ?", answers: ["Atlantique", "Pacifique", "Indien", "Arctique"], correct: 1 },
+            { question: "Quelle est la capitale de l'Australie ?", answers: ["Sydney", "Melbourne", "Canberra", "Perth"], correct: 2 },
+            { question: "Quel métal est extrait de la bauxite ?", answers: ["Fer", "Cuivre", "Aluminium", "Plomb"], correct: 2 },
+            { question: "Quel sport est associé à Wimbledon ?", answers: ["Golf", "Tennis", "Cricket", "Rugby"], correct: 1 },
+            { question: "Dans quel pays se trouve le Machu Picchu ?", answers: ["Bolivie", "Chili", "Équateur", "Pérou"], correct: 3 },
+            { question: "Quel est le symbole chimique du fer ?", answers: ["Fe", "Ir", "Fr", "Fi"], correct: 0 },
+            { question: "Quel est l'élément principal dans le verre ?", answers: ["Argile", "Sable", "Calcaire", "Eau"], correct: 1 },
+            { question: "Dans quel pays peut-on visiter les Pyramides de Gizeh ?", answers: ["Maroc", "Tunisie", "Égypte", "Arabie Saoudite"], correct: 2 },
+        ];
+
+        const quiz3Questions = [
+            { question: "Quel est le plus haut sommet du monde ?", answers: ["K2", "Mont Everest", "Mont Blanc", "Kilimandjaro"], correct: 1 },
+            { question: "Quelle est la monnaie officielle du Japon ?", answers: ["Won", "Yen", "Baht", "Dollar"], correct: 1 },
+            { question: "Quel est le nom du héros de 'Les Misérables' ?", answers: ["Jean Valjean", "Javert", "Cosette", "Marius"], correct: 0 },
+            { question: "Quel pays a accueilli les Jeux olympiques en 2016 ?", answers: ["Brésil", "Chine", "Japon", "Canada"], correct: 0 },
+            { question: "Quel organe est responsable du pompage du sang ?", answers: ["Poumons", "Reins", "Foie", "Cœur"], correct: 3 },
+            { question: "Quel gaz les plantes absorbent-elles pour la photosynthèse ?", answers: ["Oxygène", "Dioxyde de carbone", "Azote", "Hydrogène"], correct: 1 },
+            { question: "Quelle couleur se trouve sur le drapeau de l'Italie ?", answers: ["Rouge", "Jaune", "Bleu", "Noir"], correct: 0 },
+            { question: "Quel est l'auteur de 'Harry Potter' ?", answers: ["J.K. Rowling", "Tolkien", "George R.R. Martin", "Stephen King"], correct: 0 },
+            { question: "Quelle est la capitale de l'Espagne ?", answers: ["Barcelone", "Séville", "Madrid", "Valence"], correct: 2 },
+            { question: "Quelle étoile est la plus proche de la Terre ?", answers: ["Sirius", "Alpha Centauri", "Soleil", "Polaris"], correct: 2 },
+        ];
+
         let currentQuestion = 0;
         let score = 0;
+        let currentQuiz = quiz1Questions;
 
         function loadQuestion() {
-            const quizDiv = document.getElementById("quiz-1");
+            const quizDiv = document.querySelector(".quiz:not([style*='display: none'])");
             quizDiv.innerHTML = "";
 
-            if (currentQuestion < quiz1Questions.length) {
-                const q = quiz1Questions[currentQuestion];
+            if (currentQuestion < currentQuiz.length) {
+                const q = currentQuiz[currentQuestion];
 
                 const questionElement = document.createElement("div");
                 questionElement.classList.add("question");
@@ -107,7 +140,7 @@
         }
 
         function checkAnswer(index) {
-            if (index === quiz1Questions[currentQuestion].correct) {
+            if (index === currentQuiz[currentQuestion].correct) {
                 score++;
             }
             currentQuestion++;
@@ -115,15 +148,17 @@
         }
 
         function showResult() {
-            const quizDiv = document.getElementById("quiz-1");
+            const quizDiv = document.querySelector(".quiz:not([style*='display: none'])");
             const resultDiv = document.getElementById("result");
 
             quizDiv.style.display = "none";
             resultDiv.style.display = "block";
-            resultDiv.textContent = `Quiz terminé ! Vous avez obtenu ${score} / ${quiz1Questions.length} bonnes réponses.`;
+            resultDiv.textContent = `Quiz terminé ! Vous avez obtenu ${score} / ${currentQuiz.length} bonnes réponses.`;
         }
 
-        loadQuestion();
+        document.addEventListener("DOMContentLoaded", () => {
+            loadQuestion();
+        });
     </script>
 </body>
 </html>
